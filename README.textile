@@ -1,0 +1,80 @@
+h1. dlparduino
+
+DPL-IO8 Compatible firmware/sketch for Arduino-like boards.
+
+
+h2. Project Goal
+
+Provide a drop-in replacement for DLP-IO hardware using an off-the-shelve Arduino-compatible board.
+
+
+h2. Planned features
+
+# Digital out control (high/low)
+# Digital in reading
+# Analog in reading
+
+
+h2. Features NOT planned
+
+# DS18B20 digital temperature sensor reading.
+# Binary protocol
+
+
+h2. Incompatibilities
+
+Due to the Arduino hardware, not all pins have analog-to-digital converter available. Only digital in/out will be available on some pins.
+
+h2. Current status
+
+Nothing done, a new project just started.
+
+
+h2. Communication setup
+
+115200 bauds, no parity, 8bits data, 1 stop bit, no flow control
+
+
+h2. Protocol description
+
+This is the DLP-IO8 protocol.
+
+
+|_. Channel |_. ASCII |_. Hex |_. Description |_. Return/comments |
+|/4. *Channel 1* | 1 | 0x31 | Digital out - High | Nothing |
+| Q | 0x51 | Digital out - Low | Nothing |
+| A | 0x41 | Digital in | Returns 0 or 1 |
+| Z | 0x5A | Analog in | Returns measured voltage[1] |
+|/4. *Channel 2* | 2 | 0x32 | Digital out - High | Nothing |
+| W | 0x57 | Digital out - Low | Nothing |
+| S | 0x53 | Digital in | Returns 0 or 1 |
+| X | 0x58 | Analog in | Returns measured voltage[1] |
+|/4. *Channel 3* | 3 | 0x33 | Digital out - High | Nothing |
+| E | 0x45 | Digital out - Low | Nothing |
+| D | 0x44 | Digital in | Returns 0 or 1 |
+| C | 0x43 | Analog in | Returns measured voltage[1] |
+|/4. *Channel 4* | 4 | 0x34 | Digital out - High | Nothing |
+| R | 0x52 | Digital out - Low | Nothing |
+| F | 0x46 | Digital in | Returns 0 or 1 |
+| V | 0x56 | Analog in | Returns measured voltage[1] |
+|/4. *Channel 5* | 5 | 0x35 | Digital out - High | Nothing |
+| T | 0x54 | Digital out - Low | Nothing |
+| G | 0x47 | Digital in | Returns 0 or 1 |
+| B | 0x42 | Analog in | Returns measured voltage[1] |
+|/4. *Channel 6* | 6 | 0x36 | Digital out - High | Nothing |
+| Y | 0x59 | Digital out - Low | Nothing |
+| H | 0x48 | Digital in | Returns 0 or 1 |
+| N | 0x4E | Analog in | Returns measured voltage[1] |
+|/4. *Channel 7* | 7 | 0x37 | Digital out - High | Nothing |
+| U | 0x55 | Digital out - Low | Nothing |
+| J | 0x4A | Digital in | Returns 0 or 1 |
+| M | 0x4D | Analog in | Returns measured voltage[1] |
+|/4. *Channel 8* | 8 | 0x38 | Digital out - High | Nothing |
+| I | 0x49 | Digital out - Low | Nothing |
+| I | 0x4B | Digital in | Returns 0 or 1 |
+| , | 0x2C | Analog in | Returns measured voltage[1] |
+
+
+fn1. Voltage is returned as a ASCII string (e.g : 1.23)
+
+
