@@ -5,7 +5,7 @@ DPL-IO8 Compatible firmware/sketch for Arduino-like boards.
 
 h2. Project Goal
 
-Provide a drop-in replacement for DLP-IO hardware using an off-the-shelve Arduino-compatible board.
+Provide a drop-in replacement for DLP-IO8 hardware using an off-the-shelve Arduino-compatible board when you don't need the whole DPL-IO8 hardware characteristics.
 
 
 h2. Planned features
@@ -23,7 +23,8 @@ h2. Features NOT planned
 
 h2. Incompatibilities
 
-Due to the Arduino hardware, not all pins have analog-to-digital converter available. Only digital in/out will be available on some pins.
+Due to the Arduino hardware, not all pins have analog-to-digital converter available. Only digital in/out will be available on all pins; Analog in reading will only be available on pins internally connected to the ADC.
+
 
 h2. Current status
 
@@ -37,7 +38,7 @@ h2. Communication setup
 
 h2. Protocol description
 
-This is the DLP-IO8 protocol.
+This is the DLP-IO8 protocol, see http://www.dlpdesign.com/usb/io8.php for the original product and related datasheet.
 
 
 |_. Channel |_. ASCII |_. Hex |_. Description |_. Return/comments |
@@ -74,7 +75,10 @@ This is the DLP-IO8 protocol.
 | I | 0x4B | Digital in | Returns 0 or 1 |
 | , | 0x2C | Analog in | Returns measured voltage[1] |
 
+fn1. Voltage is returned as an ASCII string (e.g : 1.23).
 
-fn1. Voltage is returned as a ASCII string (e.g : 1.23)
 
+h2. Disclaimer
 
+I am not afiliated with the dlpdesign company in any way; just a consumer of some of their products.
+dlpdesign retain ownership of their trademarks, copyrights and other legal stuffs.
