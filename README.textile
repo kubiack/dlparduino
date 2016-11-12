@@ -33,7 +33,7 @@ Nothing done, a new project just started.
 
 h2. Communication setup
 
-115200 bauds, no parity, 8bits data, 1 stop bit, no flow control
+115200 bauds, no parity, 8 bits data, 1 stop bit, no flow control
 
 
 h2. Protocol description
@@ -72,7 +72,7 @@ This is the DLP-IO8 protocol, see http://www.dlpdesign.com/usb/io8.php for the o
 | M | 0x4D | Analog in | Returns measured voltage[1] |
 |/4. *Channel 8* | 8 | 0x38 | Digital out - High | Nothing |
 | I | 0x49 | Digital out - Low | Nothing |
-| I | 0x4B | Digital in | Returns 0 or 1 |
+| K | 0x4B | Digital in | Returns 0 or 1 |
 | , | 0x2C | Analog in | Returns measured voltage[1] |
 
 fn1. Voltage is returned as an ASCII string (e.g : 1.23).
@@ -82,3 +82,4 @@ h2. Disclaimer
 
 I am not afiliated with the dlpdesign company in any way; just a consumer of some of their products.
 dlpdesign retain ownership of their trademarks, copyrights and other legal stuffs.
+
