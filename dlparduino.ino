@@ -1,9 +1,9 @@
 /*
-	dlparduino : DPL-IO8 Compatible firmware/sketch for Arduino-like boards.
+    dlparduino : DPL-IO8 Compatible firmware/sketch for Arduino-like boards.
 
-	Copyright 2016 Romain Rossi <kubiack@gmail.com>
-	
-	This program is free software: you can redistribute it and/or modify
+    Copyright 2016 Romain Rossi <kubiack@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -26,53 +26,53 @@ struct channel_s
     int analog;
 };
 
-const struct channel_s channel[9] =
+// Array to have association between channel number and pin number
+// current pinout is for arduino nano : uses A0-A7 pins + 2 and 3
+// A6 and A7 pins are input-only (on arduino nano board) so should be externally connected to 3 and 2 repectively to provides digital in/out function
+const struct channel_s channels[8] =
 {
     {
-        //Channel 0 don't exists in the protocol
-        .pin = 0,
-        .analog = 0
-    }
-    , {
-        .pin = 1,
+        .pin = A0,
         .analog = A0
     }
     , {
-        .pin = 2,
+        .pin = A1,
         .analog = A1
     }
     , {
-        .pin = 3,
+        .pin = A2,
         .analog = A2
     }
     , {
-        .pin = 4,
+        .pin = A3,
         .analog = A3
     }
     , {
-        .pin = 5,
+        .pin = A4,
         .analog = A4
     }
     , {
-        .pin = 6,
+        .pin = A5,
         .analog = A5
     }
     , {
-        .pin = 7,
+        .pin = 3,
         .analog = A6
     }
     , {
-        .pin = 8,
+        .pin = 2,
         .analog = A7
     }
 };
 
+// Configure the pin as a digital output and set the ping level
 void digitalout( const struct channel_s chan, const char val )
 {
     pinMode( chan.pin, OUTPUT );
     digitalWrite( chan.pin, val );
 }
 
+// Configure the pin as digital input, read the level and send it to the uart
 void digitalin( const struct channel_s chan )
 {
     pinMode( chan.pin, INPUT );
@@ -80,25 +80,21 @@ void digitalin( const struct channel_s chan )
     Serial.print( val );
 }
 
+// Configure the pin as analog input, read the value and sent it to the uart
 void analogin( const struct channel_s chan )
 {
+    pinMode( chan.pin, INPUT );
     int ana_in = analogRead( chan.analog );
-    // map it to the range of the analog out:
-    //outputValue = map( sensorValue, 0, 1023, 0, 255 );
-    // change the analog out value:
-    //analogWrite( analogOutPin, outputValue );
-    // print the results to the serial monitor:
-    Serial.print( "sensor = " );
-    Serial.print( ana_in );
+    // map it to centivolts:
+    int ana_in_v = map( ana_in, 0, 1023, 0, 500 );
+    Serial.print( ana_in_v );
 }
-
-
 
 void setup()
 {
     Serial.begin( 115200 );
     // initialize the LED pin as an output:
-    pinMode( ledPin, OUTPUT );
+    //pinMode( ledPin, OUTPUT );
     analogReference( DEFAULT );
 }
 
@@ -106,116 +102,116 @@ void loop()
 {
     if( Serial.available() > 0 )
     {
+        int channel = -1;
         // read the oldest byte in the serial buffer:
         in = Serial.read();
+        // which channel [1 to 8]?
         switch( in )
         {
-                // Channel 1
             case '1':
-                digitalout( channel[1], HIGH );
-                break;
             case 'Q':
-                digitalout( channel[1], LOW );
-                break;
             case 'A':
-                digitalin( channel[1] );
-                break;
             case 'Z':
-                analogin( channel[1] );
+                channel = 1;
                 break;
-                // Channel 2
             case '2':
-                digitalout( channel[2], HIGH );
-                break;
             case 'W':
-                digitalout( channel[2], LOW );
-                break;
             case 'S':
-                digitalin( channel[2] );
-                break;
             case 'X':
-                analogin( channel[2] );
+                channel = 2;
                 break;
-                // Channel 3
             case '3':
-                digitalout( channel[3], HIGH );
-                break;
             case 'E':
-                digitalout( channel[3], LOW );
-                break;
             case 'D':
-                digitalin( channel[3] );
-                break;
             case 'C':
-                analogin( channel[3] );
+                channel = 3;
                 break;
-                // Channel 4
             case '4':
-                digitalout( channel[4], HIGH );
-                break;
             case 'R':
-                digitalout( channel[4], LOW );
-                break;
             case 'F':
-                digitalin( channel[4] );
-                break;
             case 'V':
-                analogin( channel[4] );
+                channel = 4;
                 break;
-                // Channel 5
             case '5':
-                digitalout( channel[5], HIGH );
-                break;
             case 'T':
-                digitalout( channel[5], LOW );
-                break;
             case 'G':
-                digitalin( channel[5] );
-                break;
             case 'B':
-                analogin( channel[5] );
+                channel = 5;
                 break;
-                // Channel 6
             case '6':
-                digitalout( channel[6], HIGH );
-                break;
             case 'Y':
-                digitalout( channel[6], LOW );
-                break;
             case 'H':
-                digitalin( channel[6] );
-                break;
             case 'N':
-                analogin( channel[6] );
+                channel = 6;
                 break;
-                // Channel 7
             case '7':
-                digitalout( channel[7], HIGH );
-                break;
             case 'U':
-                digitalout( channel[7], LOW );
-                break;
             case 'J':
-                digitalin( channel[7] );
-                break;
             case 'M':
-                analogin( channel[7] );
+                channel = 7;
                 break;
-                // Channel 8
             case '8':
-                digitalout( channel[8], HIGH );
-                break;
             case 'I':
-                digitalout( channel[8], LOW );
-                break;
             case 'K':
-                digitalin( channel[8] );
-                break;
             case ',':
-                analogin( channel[8] );
+                channel = 8;
                 break;
             default:
+                channel = -1;
                 break;
+        }
+        // which operation ?
+        if( channel > 0 )
+        {
+            switch( in )
+            {
+                    // DigitalOut HIGH
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                    digitalout( channels[channel - 1], HIGH );
+                    break;
+                    // DigitalOut LOW
+                case 'Q':
+                case 'W':
+                case 'E':
+                case 'R':
+                case 'T':
+                case 'Y':
+                case 'U':
+                case 'I':
+                    digitalout( channels[channel - 1], LOW );
+                    break;
+                    // Digital IN
+                case 'A':
+                case 'S':
+                case 'D':
+                case 'F':
+                case 'G':
+                case 'H':
+                case 'J':
+                case 'K':
+                    digitalin( channels[channel - 1] );
+                    break;
+                    // Analog IN
+                case 'Z':
+                case 'X':
+                case 'C':
+                case 'V':
+                case 'B':
+                case 'N':
+                case 'M':
+                case ',':
+                    analogin( channels[channel - 1] );
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
