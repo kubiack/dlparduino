@@ -1,6 +1,6 @@
 h1. dlparduino
 
-DPL-IO8 Compatible firmware/sketch for Arduino-like boards.
+DLP-IO8 Compatible firmware/sketch for Arduino-like boards.
 
 
 h2. Project Goal
